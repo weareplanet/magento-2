@@ -15,6 +15,7 @@
 	<preference for="WeArePlanet\Payment\Api\PaymentMethodConfigurationManagementInterface" type="WeArePlanet\Payment\Model\PaymentMethodConfigurationManagement" />
 	<preference for="WeArePlanet\Payment\Api\Data\PaymentMethodConfigurationInterface" type="WeArePlanet\Payment\Model\PaymentMethodConfiguration" />
 	<preference for="WeArePlanet\Payment\Api\Data\PaymentMethodConfigurationSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+	<preference for="WeArePlanet\Payment\Api\OrderRepositoryInterface" type="WeArePlanet\Payment\Model\OrderRepository" />
 	<preference for="WeArePlanet\Payment\Api\TransactionInfoRepositoryInterface" type="WeArePlanet\Payment\Model\TransactionInfoRepository" />
 	<preference for="WeArePlanet\Payment\Api\TransactionInfoManagementInterface" type="WeArePlanet\Payment\Model\TransactionInfoManagement" />
 	<preference for="WeArePlanet\Payment\Api\Data\TransactionInfoInterface" type="WeArePlanet\Payment\Model\TransactionInfo" />
