@@ -16,6 +16,7 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Backend\Helper\Data as urlBackendHelper;
+use WeArePlanet\Payment\Api\Data\TransactionInfoInterface;
 use WeArePlanet\Payment\Api\TransactionInfoRepositoryInterface;
 use WeArePlanet\Payment\Helper\Data as Helper;
 use WeArePlanet\Payment\Helper\Document as DocumentHelper;
@@ -93,7 +94,7 @@ class Info extends \Magento\Payment\Block\Info
 
     /**
      *
-     * @var \WeArePlanet\Payment\Model\TransactionInfo
+     * @var TransactionInfoInterface|bool
      */
     private $transaction;
 
@@ -266,7 +267,7 @@ class Info extends \Magento\Payment\Block\Info
     /**
      * Gets the transaction info or false if not available.
      *
-     * @return \WeArePlanet\Payment\Model\TransactionInfo|false
+     * @return TransactionInfoInterface|bool
      */
     #[\ReturnTypeWillChange]
     public function getTransaction()

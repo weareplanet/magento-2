@@ -14,7 +14,6 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Sales\Model\ResourceModel\Order as OrderResourceModel;
 use Psr\Log\LoggerInterface;
-use WeArePlanet\Payment\Api\TransactionInfoManagementInterface;
 use WeArePlanet\Payment\Api\TransactionInfoRepositoryInterface;
 use WeArePlanet\Payment\Model\ApiClient;
 use WeArePlanet\Payment\Model\Webhook\Request;
@@ -40,16 +39,14 @@ class DeliveryIndicationListener extends AbstractOrderRelatedListener
      * @param OrderResourceModel $orderResourceModel
      * @param CommandPoolInterface $commandPool
      * @param TransactionInfoRepositoryInterface $transactionInfoRepository
-     * @param TransactionInfoManagementInterface $transactionInfoManagement
      * @param ApiClient $apiClient
      */
     public function __construct(ResourceConnection $resource, LoggerInterface $logger, OrderFactory $orderFactory,
         OrderResourceModel $orderResourceModel, CommandPoolInterface $commandPool,
-        TransactionInfoRepositoryInterface $transactionInfoRepository,
-        TransactionInfoManagementInterface $transactionInfoManagement, ApiClient $apiClient)
+        TransactionInfoRepositoryInterface $transactionInfoRepository, ApiClient $apiClient)
     {
         parent::__construct($resource, $logger, $orderFactory, $orderResourceModel, $commandPool,
-            $transactionInfoRepository, $transactionInfoManagement);
+            $transactionInfoRepository);
         $this->apiClient = $apiClient;
     }
 
