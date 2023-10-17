@@ -20,7 +20,6 @@ use Magento\Payment\Gateway\Validator\ValidatorPoolInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Store\Model\ScopeInterface;
 use Psr\Log\LoggerInterface;
-use WeArePlanet\Payment\Api\Data\PaymentMethodConfigurationInterface;
 use WeArePlanet\Payment\Api\PaymentMethodConfigurationRepositoryInterface;
 use WeArePlanet\Payment\Block\Method\Form;
 use WeArePlanet\Payment\Block\Method\Info;
@@ -80,7 +79,7 @@ class Adapter extends \Magento\Payment\Model\Method\Adapter
 
     /**
      *
-     * @var PaymentMethodConfigurationInterface
+     * @var \WeArePlanet\Payment\Model\PaymentMethodConfiguration
      */
     private $paymentMethodConfiguration;
 

@@ -20,7 +20,6 @@ interface PaymentMethodConfigurationManagementInterface
 
     /**
      * Synchronizes the payment method configurations from WeArePlanet.
-     * @return void
      */
     public function synchronize();
 
@@ -28,7 +27,6 @@ interface PaymentMethodConfigurationManagementInterface
      * Updates the payment method configuration information.
      *
      * @param \WeArePlanet\Sdk\Model\PaymentMethodConfiguration $configuration
-     * @return void
      */
     public function update(\WeArePlanet\Sdk\Model\PaymentMethodConfiguration $configuration);
 }

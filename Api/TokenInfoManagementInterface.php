@@ -10,7 +10,7 @@
  */
 namespace WeArePlanet\Payment\Api;
 
-use WeArePlanet\Payment\Api\Data\TokenInfoInterface;
+use WeArePlanet\Payment\Model\TokenInfo;
 
 /**
  * Token info management interface.
@@ -25,7 +25,6 @@ interface TokenInfoManagementInterface
      *
      * @param int $spaceId
      * @param int $tokenVersionId
-     * @return void
      */
     public function updateTokenVersion($spaceId, $tokenVersionId);
 
@@ -34,15 +33,13 @@ interface TokenInfoManagementInterface
      *
      * @param int $spaceId
      * @param int $tokenId
-     * @return void
      */
     public function updateToken($spaceId, $tokenId);
 
     /**
      * Deletes the token on WeArePlanet.
      *
-     * @param TokenInfoInterface $token
-     * @return void
+     * @param Data\TokenInfoInterface $token
      */
-    public function deleteToken(TokenInfoInterface $token);
+    public function deleteToken(TokenInfo $token);
 }

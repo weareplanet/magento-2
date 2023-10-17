@@ -15,6 +15,7 @@ use Magento\Sales\Model\Order\Creditmemo;
 use Magento\Sales\Model\Order\Invoice;
 use WeArePlanet\Payment\Api\RefundJobRepositoryInterface;
 use WeArePlanet\Payment\Api\Data\RefundJobInterface;
+use WeArePlanet\Payment\Model\ApiClient;
 use WeArePlanet\Payment\Model\RefundJobFactory;
 use WeArePlanet\Sdk\Model\RefundCreate;
 use WeArePlanet\Sdk\Model\RefundType;
@@ -48,6 +49,7 @@ class RefundService
      * @param LineItemReductionService $lineItemReductionService
      * @param RefundJobFactory $refundJobFactory
      * @param RefundJobRepositoryInterface $refundJobRepository
+     * @param ApiClient $apiClient
      */
     public function __construct(LineItemReductionService $lineItemReductionService,
         RefundJobFactory $refundJobFactory, RefundJobRepositoryInterface $refundJobRepository)

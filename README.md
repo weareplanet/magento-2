@@ -7,12 +7,12 @@ This repository contains the Magento 2 extension that enables to process payment
 
 ## Requirements
 
-* [Magento 2](https://magento.com/) 2.3.x or later
+* [Magento 2](https://magento.com/) 2.3.x up to 2.4.3, included.
 * [PHP](http://php.net/) 7.3 or later
 
 ## Documentation
 
-* [Documentation](https://plugin-documentation.weareplanet.com/weareplanet/magento-2/2.1.6/docs/en/documentation.html)
+* [Documentation](https://plugin-documentation.weareplanet.com/weareplanet/magento-2/1.3.24/docs/en/documentation.html)
 
 
 ## Support
@@ -30,4 +30,4 @@ We do provide special integrations for the following one step checkouts:
 
 ## License
 
-Please see the [license file](https://github.com/weareplanet/magento-2/blob/2.1.6/LICENSE) for more information.
+Please see the [license file](https://github.com/weareplanet/magento-2/blob/1.3.24/LICENSE) for more information.
