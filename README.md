@@ -1,7 +1,7 @@
 
 
 # WeArePlanet Magento 2
-This repository contains the Magento 2 extension that enables to process payments with [WeArePlanet](https://www.weareplanet.com//).
+This repository contains the Magento 2 extension that enables to process payments with [WeArePlanet](https://www.weareplanet.com/).
 
 ###### To use this extension, a [WeArePlanet](https://www.weareplanet.com/contact/sales) account is required.
 
@@ -17,7 +17,7 @@ This repository contains the Magento 2 extension that enables to process payment
 
 ## Support
 
-Support queries can be issued on the [WeArePlanet support site](https://paymentshub.weareplanet.com/space/select?target=/support).
+For support queries please contact [WeArePlanet support](mailto:support@datatrans.ch?subject=Support%20on%20Magento%202%20-%20Topic%3A).
 
 
 ## Supported One Step Checkouts
