@@ -12,12 +12,19 @@ This repository contains the Magento 2 extension that enables to process payment
 
 ## Documentation
 
-* [Documentation](https://plugin-documentation.weareplanet.com/weareplanet/magento-2/2.1.6/docs/en/documentation.html)
+* [Documentation](https://plugin-documentation.weareplanet.com/weareplanet/magento-2/2.1.7/docs/en/documentation.html)
 
 
 ## Support
 
 For support queries please contact [WeArePlanet support](mailto:support@datatrans.ch?subject=Support%20on%20Magento%202%20-%20Topic%3A).
+
+## Supported versions
+
+| Magento variant              | min. supported version | max. supported version |
+|------------------------------|------------------------|------------------------|
+| Magento 2 Enterprise Edition | Contact us             | Contact us             |
+| Magento 2 Community Edition  | 2.4.4                  | 2.4.6                  |
 
 
 ## Supported One Step Checkouts
@@ -30,4 +37,4 @@ We do provide special integrations for the following one step checkouts:
 
 ## License
 
-Please see the [license file](https://github.com/weareplanet/magento-2/blob/2.1.6/LICENSE) for more information.
+Please see the [license file](https://github.com/weareplanet/magento-2/blob/2.1.7/LICENSE) for more information.
