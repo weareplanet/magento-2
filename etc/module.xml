@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
 <!-- 
 /**
- * WeArePlanet Magento 2
+ WeArePlanet Magento 2
  *
- * This Magento 2 extension enables to process payments with WeArePlanet (https://www.weareplanet.com//).
+ * This Magento 2 extension enables to process payments with WeArePlanet (https://www.weareplanet.com).
  *
  * @package WeArePlanet_Payment
- * @author wallee AG (http://www.wallee.com/)
+ * @author Planet Merchant Services Ltd (https://www.weareplanet.com)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
+
  */
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="WeArePlanet_Payment" setup_version="2.1.7">
+    <module name="WeArePlanet_Payment" setup_version="2.1.8">
         <sequence>
             <module name="Magento_Sales"/>
             <module name="Magento_Payment"/>

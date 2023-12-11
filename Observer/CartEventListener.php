@@ -1,12 +1,13 @@
 <?php
 /**
- * WeArePlanet Magento 2
+ WeArePlanet Magento 2
  *
- * This Magento 2 extension enables to process payments with WeArePlanet (https://www.weareplanet.com//).
+ * This Magento 2 extension enables to process payments with WeArePlanet (https://www.weareplanet.com).
  *
  * @package WeArePlanet_Payment
- * @author wallee AG (http://www.wallee.com/)
+ * @author Planet Merchant Services Ltd (https://www.weareplanet.com)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
+
  */
 namespace WeArePlanet\Payment\Observer;
 
@@ -45,7 +46,7 @@ class CartEventListener implements ObserverInterface
 
     /**
      * This event listener was created appositely to clear the checkout session whenever the cart is changed.
-     * By cleaning the checkout session, we impose to call the Wallee Portal and update the transaction
+     * By cleaning the checkout session, we impose to call the WeArePlanet Portal and update the transaction
      * @param Observer $observer
      * @return void
      */
