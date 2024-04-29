@@ -128,7 +128,7 @@ class TransactionService extends AbstractTransactionService
     private function getPaymentUrlInSession(Quote $quote)
     {  
         $url = $this->checkoutSession->getPaymentUrl();
-        $transactionId = $quote->getWalleeTransactionId();
+        $transactionId = $quote->getWeareplanetTransactionId();
         if ($url && preg_match('/transactionId=(\d+)/', $url, $matches)
             && isset($matches[1]) && $matches[1] == $transactionId) {           
             return $url;
@@ -348,8 +348,8 @@ class TransactionService extends AbstractTransactionService
         $transaction = $this->apiClient->getApiClient()->getTransactionService()->create($spaceId, $createTransaction);
         $this->updateQuote($quote, $transaction);
         //here the order must be updated with the space and transaction, this avoids error before landing on the payment page
-        $quote->setWalleeTransactionId($transaction->getId());
-        $quote->setWalleeSpaceId($spaceId);
+        $quote->setWeareplanetTransactionId($transaction->getId());
+        $quote->setWeareplanetSpaceId($spaceId);
         $quote->save();
         return $transaction;
     }
