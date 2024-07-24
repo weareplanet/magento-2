@@ -23,6 +23,7 @@
             <values>
                 <value id="weareplanet-base" type="host">https://app-wallee.com</value>
                 <value id="weareplanet" type="host">https://paymentshub.weareplanet.com</value>
+                <value id="weareplanet-mfgroup" type="host">https://gmtech.mfgroup.ch</value>
             </values>
         </policy>
         <policy id="frame-src">
