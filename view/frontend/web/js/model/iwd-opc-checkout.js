@@ -1,5 +1,5 @@
 /**
- WeArePlanet Magento 2
+ * WeArePlanet Magento 2
  *
  * This Magento 2 extension enables to process payments with WeArePlanet (https://www.weareplanet.com).
  *
