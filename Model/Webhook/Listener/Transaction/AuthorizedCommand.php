@@ -14,6 +14,8 @@ namespace WeArePlanet\Payment\Model\Webhook\Listener\Transaction;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender as OrderEmailSender;
+use Magento\Sales\Model\Order\Payment\Transaction;
+use WeArePlanet\Payment\Model\Webhook\Listener\Operation\AbstractOperation;
 use WeArePlanet\Sdk\Model\TransactionState;
 
 /**
@@ -57,19 +59,29 @@ class AuthorizedCommand extends AbstractCommand
             return;
         }
 
-        /** @var \Magento\Sales\Model\Order\Payment $payment */
         $payment = $order->getPayment();
         $payment->setTransactionId($entity->getLinkedSpaceId() . '_' . $entity->getId());
         $payment->setIsTransactionClosed(false);
-        $payment->registerAuthorizationNotification($entity->getAuthorizationAmount());
+        if ($order->getState() == Order::STATE_PROCESSING) {
+            // In case the order is already processing. Potentially the webhooks arriving out of order
+            $order->setWeareplanetAuthorized(true);
+            $order->setState(Order::STATE_PROCESSING);
 
-        if ($entity->getState() != TransactionState::FULFILL) {
-            $order->setState(Order::STATE_PAYMENT_REVIEW);
-            $order->addStatusToHistory('pending',
-                \__('The order should not be fulfilled yet, as the payment is not guaranteed.'));
+            $payment->registerAuthorizationNotification($payment->getAmountAuthorized());
+
+        } else {
+            $payment->registerAuthorizationNotification($payment->getAmountAuthorized());
+            if ($entity->getState() != TransactionState::FULFILL) {
+
+                $order->setState(Order::STATE_PAYMENT_REVIEW);
+                $order->addStatusToHistory('pending',
+                    \__('The order should not be fulfilled yet, as the payment is not guaranteed.')
+                );
+            }
+
+            $order->setWeareplanetAuthorized(true);
         }
 
-        $order->setWeareplanetAuthorized(true);
         $this->orderRepository->save($order);
 
         $this->sendOrderEmail($order);
