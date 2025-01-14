@@ -63,4 +63,8 @@
 	<event name="restore_quote">
 		<observer name="weareplanet_restore_quote" instance="WeArePlanet\Payment\Observer\UpdateDeclinedOrderTransaction" />
 	</event>
+
+	<event name="weareplanet_validate_and_restore_quote">
+		<observer name="weareplanet_validate_and_restore_quote_observer" instance="WeArePlanet\Payment\Observer\ValidateAndRestoreQuote" />
+	</event>
 </config>
