@@ -13,7 +13,6 @@
     <column xsi:type="bigint" name="weareplanet_transaction_id" padding="20" unsigned="true" nullable="true" identity="false" comment="weareplanet Payment Transaction Id"/>
     <column xsi:type="boolean" name="weareplanet_authorized" nullable="true" comment="weareplanet Payment Authorized"/>
     <column xsi:type="varchar" name="weareplanet_security_token" nullable="true" length="32" comment="weareplanet Payment Security Token"/>
-    <column xsi:type="timestamp" name="weareplanet_lock" on_update="false" nullable="true" comment="weareplanet Payment Lock"/>
     <index referenceId="SALES_ORDER_WEAREPLANET_SPACE_ID_WEAREPLANET_TRANSACTION_ID" indexType="btree">
       <column name="weareplanet_space_id"/>
       <column name="weareplanet_transaction_id"/>

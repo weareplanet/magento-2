@@ -241,13 +241,11 @@ class WebhookService
      *
      * @return string
      */
-    private function getUrl()
+    private function getUrl(): string
     {
-        return $this->urlBuilder->setScope($this->storeManager->getDefaultStoreView())
-            ->getUrl('weareplanet_payment/webhook/index', [
-            '_secure' => true,
-            '_nosid' => true
-        ]);
+        $route = 'index.php/weareplanet_payment/webhook/index/';
+
+        return $this->storeManager->getDefaultStoreView()->getBaseUrl(UrlInterface::URL_TYPE_WEB) . $route;
     }
 
     /**
