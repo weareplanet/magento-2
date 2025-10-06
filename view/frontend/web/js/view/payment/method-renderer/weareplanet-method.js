@@ -233,7 +233,7 @@ define([
 		fallbackToPaymentPage: function(){
 			fullScreenLoader.startLoader();
 			if (window.checkoutConfig.weareplanet.paymentPageUrl) {
-				window.location.replace(window.checkoutConfig.weareplanet.paymentPageUrl + "&paymentMethodConfigurationId=" + this.getConfigurationId());
+				window.location.replace(window.checkoutConfig.weareplanet.paymentPageUrl);
 			} else {
 				window.location.replace(urlBuilder.build("weareplanet_payment/checkout/failure"));
 			}
