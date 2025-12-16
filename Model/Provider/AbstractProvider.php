@@ -111,20 +111,28 @@ abstract class AbstractProvider
      */
     private function loadData()
     {
+        $this->data = [];
+        $data = null;
+        $updateCache = false;
+        
         $cachedData = $this->cache->load($this->cacheKey);
+        
         if ($cachedData) {
-            $deserialized = $this->deserialize($cachedData);
-            if ($deserialized != null) {
-                $this->data = $deserialized;
-                return;
-            }
+            $data = $this->deserialize($cachedData);
         }
 
-        $this->data = [];
-        foreach ($this->fetchData() as $entry) {
+        if ($data === null) {
+            $data = $this->fetchData();
+            $updateCache = true;
+        }
+
+        foreach ($data as $entry) {
             $this->data[$this->getId($entry)] = $entry;
         }
-        $this->cache->save($this->serialize($this->data), $this->cacheKey);
+
+        if ($updateCache) {
+            $this->cache->save($this->serialize($this->data), $this->cacheKey);    
+        }
     }
 
     /**
@@ -145,7 +153,7 @@ abstract class AbstractProvider
     {
         $serializer = new ObjectSerializer();
         $decoded = \json_decode($data);
-        if (\json_last_error() !== JSON_ERROR_NONE) {
+        if (\json_last_error() === JSON_ERROR_NONE) {
             return $serializer->deserialize($decoded, $this->type . '[]');
         } else {
             return null;
