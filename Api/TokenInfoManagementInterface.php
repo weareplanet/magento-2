@@ -13,11 +13,6 @@ namespace WeArePlanet\Payment\Api;
 
 use WeArePlanet\Payment\Api\Data\TokenInfoInterface;
 
-/**
- * Token info management interface.
- *
- * @api
- */
 interface TokenInfoManagementInterface
 {
 

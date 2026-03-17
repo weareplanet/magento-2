@@ -16,8 +16,8 @@
 {
     "*": {
         "WeArePlanet_Payment/js/weareplanet-device": {
-            "scriptUrl" : "<?=$block->escapeHtml($block->getScriptUrl())?>",
-            "identifierUrl" : "<?=$block->escapeHtml($block->getSessionIdentifierUrl())?>"
+            "scriptUrl" : "<?=$escaper->escapeHtml($block->getScriptUrl())?>",
+            "identifierUrl" : "<?=$escaper->escapeHtml($block->getSessionIdentifierUrl())?>"
         }
     }
 }

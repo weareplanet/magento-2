@@ -58,8 +58,11 @@ class ApiClient
      * @param EncryptorInterface $encrypter
      * @param LoggerInterface $logger
      */
-    public function __construct(ScopeConfigInterface $scopeConfig, EncryptorInterface $encrypter,  LoggerInterface $logger)
-    {
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        EncryptorInterface $encrypter,
+        LoggerInterface $logger
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->encrypter = $encrypter;
         $this->logger = $logger;
@@ -92,16 +95,22 @@ class ApiClient
     {
         if ($this->apiClient == null) {
             $userId = $this->scopeConfig->getValue('weareplanet_payment/general/api_user_id');
-            $applicationKey = $this->scopeConfig->getValue('weareplanet_payment/general/api_user_secret');
+            $applicationKey = $this->scopeConfig->getValue(
+                'weareplanet_payment/general/api_user_secret'
+            );
             if (! empty($userId) && ! empty($applicationKey)) {
-                $client = new \WeArePlanet\Sdk\ApiClient($userId, $this->encrypter->decrypt($applicationKey));
+                $client = new \WeArePlanet\Sdk\ApiClient(
+                    $userId,
+                    $this->encrypter->decrypt($applicationKey)
+                );
                 $client->setBasePath($this->getBaseGatewayUrl() . '/api');
                 $this->apiClient = $client;
                 $apiClientHeaders = new ApiClientHeaders();
                 $apiClientHeaders->addHeaders($this->apiClient);
             } else {
                 throw new \WeArePlanet\Payment\Model\ApiClientException(
-                    'The WeArePlanet API user data are incomplete.');
+                    'The WeArePlanet API user data are incomplete.'
+                );
             }
         }
         return $this->apiClient;

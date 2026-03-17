@@ -33,33 +33,17 @@ class LabelDescriptorGroupProvider extends AbstractProvider
      */
     public function __construct(FrontendInterface $cache, ApiClient $apiClient)
     {
-        parent::__construct($cache, 'weareplanet_payment_label_descriptor_groups',
-            \WeArePlanet\Sdk\Model\LabelDescriptorGroup::class);
+        parent::__construct(
+            $cache,
+            'weareplanet_payment_label_descriptor_groups',
+            \WeArePlanet\Sdk\Model\LabelDescriptorGroup::class
+        );
         $this->apiClient = $apiClient;
     }
 
     /**
-     * Gets the label descriptor group by the given id.
+     * Fetch label descriptor groups from the API.
      *
-     * @param string $id
-     * @return \WeArePlanet\Sdk\Model\LabelDescriptorGroup
-     */
-    public function find($id)
-    {
-        return parent::find($id);
-    }
-
-    /**
-     * Gets a list of label descriptor groups.
-     *
-     * @return \WeArePlanet\Sdk\Model\LabelDescriptorGroup[]
-     */
-    public function getAll()
-    {
-        return parent::getAll();
-    }
-
-    /**
      * @return mixed
      */
     protected function fetchData()
@@ -67,6 +51,12 @@ class LabelDescriptorGroupProvider extends AbstractProvider
         return $this->apiClient->getService(LabelDescriptionGroupService::class)->all();
     }
 
+    /**
+     * Get label descriptor group ID from the given entry.
+     *
+     * @param \WeArePlanet\Sdk\Model\LabelDescriptorGroup $entry
+     * @return int
+     */
     protected function getId($entry)
     {
         /** @var \WeArePlanet\Sdk\Model\LabelDescriptorGroup $entry */
