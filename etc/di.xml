@@ -257,7 +257,7 @@
         </arguments>
     </type>
 
-    <virtualType name="WeArePlanet\Payment\TransactionGateway" type="WeArePlanet\PluginCore\Sdk\SdkV1\TransactionGateway">
+    <virtualType name="WeArePlanet\Payment\TransactionGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\TransactionGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
             <argument name="logger" xsi:type="object">WeArePlanet\PluginCore\Log\LoggerInterface</argument>
