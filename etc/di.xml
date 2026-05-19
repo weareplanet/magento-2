@@ -32,6 +32,7 @@
     <preference for="WeArePlanet\PluginCore\Settings\SettingsProviderInterface" type="WeArePlanet\Payment\Model\CoreWebhook\SettingsProvider" />
     <preference for="WeArePlanet\PluginCore\Webhook\StateFetcherInterface" type="WeArePlanet\Payment\Model\CoreWebhook\StateFetcher" />
     <preference for="WeArePlanet\PluginCore\Webhook\WebhookLifecycleHandler" type="WeArePlanet\Payment\Model\CoreWebhook\CompositeWebhookLifecycleHandler" />
+    <preference for="WeArePlanet\PluginCore\Transaction\TransactionGatewayInterface" type="WeArePlanet\Payment\TransactionGateway" />
     <type name="WeArePlanet\Payment\Model\ResourceModel\TokenInfo\Collection\Grid">
         <arguments>
             <argument name="resource" xsi:type="object">WeArePlanet\Payment\Model\ResourceModel\TokenInfo</argument>
@@ -257,7 +258,7 @@
         </arguments>
     </type>
 
-    <virtualType name="WeArePlanet\Payment\TransactionGateway" type="WeArePlanet\PluginCore\Sdk\SdkV1\TransactionGateway">
+    <virtualType name="WeArePlanet\Payment\TransactionGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\TransactionGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
             <argument name="logger" xsi:type="object">WeArePlanet\PluginCore\Log\LoggerInterface</argument>
@@ -356,4 +357,7 @@
             <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\WebhookLogger</argument>
         </arguments>
     </type>
+    
+    <preference for="WeArePlanet\Payment\Api\PaymentMetadataManagementInterface" type="WeArePlanet\Payment\Model\PaymentMetadataManagement" />
+    <preference for="WeArePlanet\Payment\Api\GuestPaymentMetadataManagementInterface" type="WeArePlanet\Payment\Model\GuestPaymentMetadataManagement" />
 </config>

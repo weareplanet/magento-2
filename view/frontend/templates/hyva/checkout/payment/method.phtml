@@ -1,0 +1,39 @@
+<?php
+/**
+ * WeArePlanet Magento 2
+ *
+ * This Magento 2 extension enables to process payments with WeArePlanet (https://www.weareplanet.com).
+ *
+ * @package WeArePlanet_Payment
+ * @author Planet Merchant Services Ltd (https://www.weareplanet.com)
+ * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
+
+ */
+/** @var Magento\Framework\View\Element\Template $block */
+/** @var WeArePlanet\Payment\ViewModel\WhitelabelMachineNameCheckoutViewModel $viewModel */
+
+$viewModel = $block->getViewModel();
+$method = $block->getMethod();
+if (!$method) {
+    return;
+}
+$methodCode = $method->getCode();
+
+// Only proceed if it's one of our payment methods.
+if (strpos($methodCode, 'weareplanet_payment_') !== 0) {
+    return;
+}
+
+$configData = $viewModel->getPaymentIntegrationData($methodCode);
+$configData['methodCode'] = $methodCode;
+?>
+
+<div x-data="hyvaCheckoutWhitelabelPaymentMethod"
+     data-config="<?= $block->escapeHtmlAttr(json_encode($configData)) ?>"
+     class="weareplanet-payment-method-container mt-4"
+     id="weareplanet-container-<?= $block->escapeHtmlAttr($methodCode) ?>">
+    
+    <div x-show="isIframeMode" id="weareplanet-iframe-<?= $block->escapeHtmlAttr($methodCode) ?>" class="weareplanet-iframe-wrapper border rounded p-2 bg-white shadow-sm" style="display: none;">
+        <!-- Iframe will be mounted here -->
+    </div>
+</div>

@@ -16,6 +16,7 @@ use WeArePlanet\Payment\Model\CoreWebhook\OrderInvoiceTrait;
 use WeArePlanet\PluginCore\Log\LoggerInterface;
 use WeArePlanet\PluginCore\Sdk\SdkProvider;
 use WeArePlanet\PluginCore\Webhook\Command\WebhookCommand;
+use WeArePlanet\PluginCore\Webhook\Exception\CommandException;
 use WeArePlanet\PluginCore\Webhook\WebhookContext;
 use Magento\Sales\Model\ResourceModel\Order as OrderResourceModel;
 use Magento\Sales\Model\OrderFactory;
@@ -81,6 +82,18 @@ class CaptureCommand extends WebhookCommand
         // 1. Load FRESH state from DB (Bypassing cache) to detect race conditions
         $freshOrder = $this->orderFactory->create();
         $this->orderResourceModel->load($freshOrder, $order->getId());
+
+        // Guard: capture must not run before authorization has been persisted.
+        // The Transaction and TransactionInvoice webhooks are independent entities
+        // with no cross-entity ordering guarantee. If this capture arrived first,
+        // throw a retryable exception so the portal retries after backoff — by
+        // then AuthorizedCommand will have completed.
+        if (!$freshOrder->getData('weareplanet_authorized')) {
+            throw new CommandException(sprintf(
+                'CaptureCommand: order %s is not yet authorized — deferring capture for retry.',
+                $freshOrder->getIncrementId()
+            ));
+        }
 
         // Detect if we are currently in Payment Review (e.g. set by DeliveryIndication)
         $isPaymentReview = ($freshOrder->getState() === Order::STATE_PAYMENT_REVIEW);
@@ -164,7 +177,6 @@ class CaptureCommand extends WebhookCommand
             }
         }
 
-        $order->setWeArePlanetAuthorized(true);
         $this->orderRepository->save($order);
 
         return $order;

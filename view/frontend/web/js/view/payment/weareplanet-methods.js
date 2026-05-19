@@ -19,17 +19,9 @@ define([
 ) {
 	'use strict';
 	
-	// Loads the WeArePlanet Javascript File
-	if (window.checkoutConfig.weareplanet.javascriptUrl) {
-		$.getScript(window.checkoutConfig.weareplanet.javascriptUrl);
-	}
-	
-	// Loads the WeArePlanet Lightbox File
-	if (window.checkoutConfig.weareplanet.lightboxUrl) {
-		$.getScript(window.checkoutConfig.weareplanet.lightboxUrl);
-	}
 	
 	// Registers the WeArePlanet payment methods
+
 	$.each(window.checkoutConfig.payment, function(code){
 		if (code.indexOf('weareplanet_payment_') === 0) {
 			rendererList.push({
