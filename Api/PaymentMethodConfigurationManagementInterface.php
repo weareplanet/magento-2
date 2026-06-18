@@ -11,8 +11,6 @@
  */
 namespace WeArePlanet\Payment\Api;
 
-use WeArePlanet\Sdk\Model\PaymentMethodConfiguration;
-
 interface PaymentMethodConfigurationManagementInterface
 {
 
@@ -22,12 +20,4 @@ interface PaymentMethodConfigurationManagementInterface
      * @return void
      */
     public function synchronize();
-
-    /**
-     * Updates the payment method configuration information.
-     *
-     * @param \WeArePlanet\Sdk\Model\PaymentMethodConfiguration $configuration
-     * @return void
-     */
-    public function update(PaymentMethodConfiguration $configuration);
 }
