@@ -18,8 +18,8 @@ use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\Exception\NotFoundException;
 use WeArePlanet\PluginCore\Webhook\WebhookProcessor;
 use WeArePlanet\Payment\Model\CoreWebhook\RegistryConfigurer;
-use WeArePlanet\PluginCore\Http\Request as PluginCoreRequest;
-use Psr\Log\LoggerInterface;
+use WeArePlanet\PluginCore\Http\Request as CoreRequest;
+use WeArePlanet\PluginCore\Log\LoggerInterface;
 
 /**
  * Frontend controller action to proces webhook requests.
@@ -66,11 +66,16 @@ class Index extends \WeArePlanet\Payment\Controller\Webhook implements CsrfAware
         http_response_code(500);
         $this->getResponse()->setHttpResponseCode(500);
         try {
+            $pluginCoreRequest = CoreRequest::fromMagentoRequest($this->getRequest());
+            $this->logger->debug('Webhook received.', [
+                'spaceId' => $pluginCoreRequest->get('spaceId'),
+                'entityId' => $pluginCoreRequest->get('entityId'),
+                'listenerEntityTechnicalName' => $pluginCoreRequest->get('listenerEntityTechnicalName'),
+            ]);
             $this->registryConfigurer->configure();
-            $pluginCoreRequest = PluginCoreRequest::fromMagentoRequest($this->getRequest());
             $this->webhookProcessor->process($pluginCoreRequest);
-        } catch (\Exception $e) {
-            $this->logger->critical($e);
+        } catch (\Throwable $e) {
+            $this->logger->critical($e->getMessage(), ['exception' => $e]);
             $this->getResponse()->setHttpResponseCode(500);
             return;
         }

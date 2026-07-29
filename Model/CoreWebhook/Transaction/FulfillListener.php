@@ -6,13 +6,13 @@ namespace WeArePlanet\Payment\Model\CoreWebhook\Transaction;
 
 use WeArePlanet\PluginCore\Webhook\Command\WebhookCommandInterface;
 use WeArePlanet\PluginCore\Webhook\Listener\WebhookListenerInterface;
+use WeArePlanet\PluginCore\Webhook\TransactionActionResolver;
 use WeArePlanet\PluginCore\Webhook\WebhookContext;
 use WeArePlanet\PluginCore\Log\LoggerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use WeArePlanet\Payment\Api\TransactionInfoRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Sales\Model\ResourceModel\Order as OrderResourceModel;
-use Magento\Sales\Model\OrderFactory;
 
 class FulfillListener implements WebhookListenerInterface
 {
@@ -24,7 +24,7 @@ class FulfillListener implements WebhookListenerInterface
      * @param TransactionInfoRepositoryInterface $transactionInfoRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param OrderResourceModel $orderResourceModel
-     * @param OrderFactory $orderFactory
+     * @param TransactionActionResolver $transactionActionResolver
      */
     public function __construct(
         private readonly LoggerInterface $logger,
@@ -32,7 +32,7 @@ class FulfillListener implements WebhookListenerInterface
         private readonly TransactionInfoRepositoryInterface $transactionInfoRepository,
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
         private readonly OrderResourceModel $orderResourceModel,
-        private readonly OrderFactory $orderFactory
+        private readonly TransactionActionResolver $transactionActionResolver
     ) {
     }
 
@@ -51,7 +51,7 @@ class FulfillListener implements WebhookListenerInterface
             $this->transactionInfoRepository,
             $this->searchCriteriaBuilder,
             $this->orderResourceModel,
-            $this->orderFactory
+            $this->transactionActionResolver
         );
     }
 }

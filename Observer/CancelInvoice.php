@@ -14,8 +14,7 @@ namespace WeArePlanet\Payment\Observer;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use WeArePlanet\Payment\Model\Payment\Method\Adapter;
-use WeArePlanet\Payment\Model\Service\Order\TransactionService;
-use WeArePlanet\Sdk\Model\TransactionState;
+use WeArePlanet\PluginCore\Transaction\TransactionGatewayInterface;
 
 /**
  * Observer to validate the cancellation of an invoice.
@@ -25,17 +24,17 @@ class CancelInvoice implements ObserverInterface
 
     /**
      *
-     * @var TransactionService
+     * @var TransactionGatewayInterface
      */
-    private $transactionService;
+    private $transactionGateway;
 
     /**
      *
-     * @param TransactionService $transactionService
+     * @param TransactionGatewayInterface $transactionGateway
      */
-    public function __construct(TransactionService $transactionService)
+    public function __construct(TransactionGatewayInterface $transactionGateway)
     {
-        $this->transactionService = $transactionService;
+        $this->transactionGateway = $transactionGateway;
     }
 
     /**
@@ -61,11 +60,11 @@ class CancelInvoice implements ObserverInterface
             if (! $order->getWeareplanetInvoiceAllowManipulation() &&
                 ! $invoice->getWeareplanetDerecognized()) {
                 // The invoice can only be cancelled by the merchant if the transaction is in state 'AUTHORIZED'.
-                $transaction = $this->transactionService->getTransaction(
-                    $order->getWeareplanetSpaceId(),
-                    $order->getWeareplanetTransactionId()
+                $transaction = $this->transactionGateway->find(
+                    (int) $order->getWeareplanetSpaceId(),
+                    (int) $order->getWeareplanetTransactionId()
                 );
-                if ($transaction->getState() != TransactionState::AUTHORIZED) {
+                if ($transaction === null || ! $transaction->state->allowsInvoiceManipulation()) {
                     throw new \Magento\Framework\Exception\LocalizedException(\__('The invoice cannot be cancelled.'));
                 }
             }

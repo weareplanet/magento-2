@@ -28,16 +28,21 @@
     <preference for="WeArePlanet\Payment\Api\RefundJobRepositoryInterface" type="WeArePlanet\Payment\Model\RefundJobRepository" />
     <preference for="WeArePlanet\Payment\Api\Data\RefundJobInterface" type="WeArePlanet\Payment\Model\RefundJob" />
     <preference for="WeArePlanet\Payment\Api\Data\RefundJobSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
-    <preference for="WeArePlanet\PluginCore\Log\LoggerInterface" type="WeArePlanet\Payment\Logger\PluginCoreLoggerAdapter" />
+    <preference for="WeArePlanet\PluginCore\Log\LoggerInterface" type="WeArePlanet\Payment\Logger\LoggerAdapter" />
     <preference for="WeArePlanet\PluginCore\Settings\SettingsProviderInterface" type="WeArePlanet\Payment\Model\Settings\SettingsProvider" />
     <preference for="WeArePlanet\PluginCore\Webhook\StateFetcherInterface" type="WeArePlanet\Payment\Model\CoreWebhook\StateFetcher" />
     <preference for="WeArePlanet\PluginCore\Webhook\WebhookLifecycleHandler" type="WeArePlanet\Payment\Model\CoreWebhook\CompositeWebhookLifecycleHandler" />
     <preference for="WeArePlanet\PluginCore\Transaction\TransactionGatewayInterface" type="WeArePlanet\Payment\TransactionGateway" />
+    <preference for="WeArePlanet\PluginCore\Transaction\Completion\TransactionCompletionGatewayInterface" type="WeArePlanet\Payment\TransactionCompletionGateway" />
+    <preference for="WeArePlanet\PluginCore\Transaction\Invoice\InvoiceGatewayInterface" type="WeArePlanet\Payment\InvoiceGateway" />
     <preference for="WeArePlanet\PluginCore\Webhook\WebhookManagementGatewayInterface" type="WeArePlanet\Payment\WebhookManagementGateway" />
     <preference for="WeArePlanet\PluginCore\Webhook\WebhookSignatureGatewayInterface" type="WeArePlanet\Payment\WebhookSignatureGateway" />
     <preference for="WeArePlanet\PluginCore\PaymentMethod\PaymentMethodGatewayInterface" type="WeArePlanet\Payment\PaymentMethodGateway" />
     <preference for="WeArePlanet\PluginCore\PaymentMethod\PaymentMethodRepositoryInterface" type="WeArePlanet\Payment\Model\PluginCore\PaymentMethodRepository" />
     <preference for="WeArePlanet\PluginCore\Transaction\TransactionGatewayInterface" type="WeArePlanet\Payment\TransactionGateway" />
+    <preference for="WeArePlanet\PluginCore\Refund\RefundGatewayInterface" type="WeArePlanet\Payment\RefundGateway" />
+    <preference for="WeArePlanet\PluginCore\Document\DocumentGatewayInterface" type="WeArePlanet\Payment\DocumentGateway" />
+    <preference for="WeArePlanet\PluginCore\ManualTask\ManualTaskGatewayInterface" type="WeArePlanet\Payment\ManualTaskGateway" />
     <type name="WeArePlanet\Payment\Model\ResourceModel\TokenInfo\Collection\Grid">
         <arguments>
             <argument name="resource" xsi:type="object">WeArePlanet\Payment\Model\ResourceModel\TokenInfo</argument>
@@ -119,12 +124,6 @@
             <argument name="commandPool" xsi:type="object">WeArePlanetTransactionCompletionWebhookCommandPool</argument>
         </arguments>
     </type>
-    <type name="WeArePlanet\Payment\Model\Webhook\Listener\RefundListener">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">WeArePlanetRefundWebhookCommandPool</argument>
-        </arguments>
-    </type>
-
     <virtualType name="WeArePlanetTransactionWebhookCommandPool" type="WeArePlanet\Payment\Model\Webhook\Listener\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
@@ -159,15 +158,6 @@
             </argument>
         </arguments>
     </virtualType>
-    <virtualType name="WeArePlanetRefundWebhookCommandPool" type="WeArePlanet\Payment\Model\Webhook\Listener\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="successful" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\Refund\SuccessfulCommand</item>
-                <item name="failed" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\Refund\FailedCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
     <!-- Payment Gateway -->
     <virtualType name="WeArePlanetPaymentGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
@@ -232,11 +222,112 @@
         </arguments>
     </type>
 
+    <!-- =================================================================== -->
+    <!-- Unified logging: single shared file for all WhitelabelMachineName log output       -->
+    <!-- =================================================================== -->
+
+    <virtualType name="WeArePlanet\Payment\Logger\Handler\File" type="WeArePlanet\Payment\Logger\Handler\GenericFileHandler">
+        <arguments>
+            <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+            <argument name="fileName" xsi:type="string">/var/log/weareplanet.log</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="WeArePlanet\Payment\Logger\Logger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="name" xsi:type="string">weareplanet</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">WeArePlanet\Payment\Logger\Handler\File</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="WeArePlanet\Payment\Logger\LoggerAdapter" type="WeArePlanet\Payment\Logger\PluginCoreLoggerAdapter">
+        <arguments>
+            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\Logger</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- =================================================================== -->
+    <!-- PluginCore gateways/services: constructor args unrelated to logging -->
+    <!-- are kept; the logger argument is dropped since it now resolves via  -->
+    <!-- the global WeArePlanet\PluginCore\Log\LoggerInterface     -->
+    <!-- preference above.                                                  -->
+    <!-- =================================================================== -->
+
     <virtualType name="WeArePlanet\Payment\TransactionGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\TransactionGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
-            <argument name="logger" xsi:type="object">WeArePlanet\PluginCore\Log\LoggerInterface</argument>
             <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Shared file handler. Each domain configures it with its own fileName via a virtualType. -->
+    <type name="WeArePlanet\Payment\Logger\Handler\GenericFileHandler">
+        <arguments>
+            <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="WeArePlanet\Payment\TransactionCompletionGateway"
+                 type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\TransactionCompletionGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WeArePlanet\Payment\InvoiceGateway"
+                 type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\InvoiceGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="WeArePlanet\PluginCore\Transaction\TransactionService">
+        <arguments>
+            <argument name="gateway" xsi:type="object">WeArePlanet\Payment\TransactionGateway</argument>
+        </arguments>
+    </type>
+
+    <type name="WeArePlanet\PluginCore\LineItem\LineItemConsistencyService">
+        <arguments>
+            <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="WeArePlanet\Payment\RefundGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\RefundGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WeArePlanet\Payment\DocumentGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\DocumentGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="WeArePlanet\PluginCore\Refund\RefundService">
+        <arguments>
+            <argument name="gateway" xsi:type="object">WeArePlanet\Payment\RefundGateway</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="WeArePlanet\Payment\PaymentMethodGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\PaymentMethodGateway">
+        <arguments>
+            <argument name="provider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WeArePlanet\Payment\ManualTaskGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\ManualTaskGateway">
+        <arguments>
+            <argument name="provider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WeArePlanet\Payment\WebhookManagementGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\WebhookManagementGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
@@ -244,36 +335,6 @@
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
             <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
-            <argument name="transactionGateway" xsi:type="object">WeArePlanet\Payment\TransactionGateway</argument>
-        </arguments>
-    </type>
-
-    <type name="WeArePlanet\Payment\Logger\PluginCoreLoggerAdapter">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\WebhookLogger</argument>
-        </arguments>
-    </type>
-
-    <virtualType name="WeArePlanet\Payment\Logger\WebhookLogger" type="Magento\Framework\Logger\Monolog">
-        <arguments>
-            <argument name="name" xsi:type="string">weareplanet_webhook</argument>
-            <argument name="handlers" xsi:type="array">
-                <item name="system" xsi:type="object">WeArePlanet\Payment\Logger\Handler\Webhook</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <type name="WeArePlanet\Payment\Logger\Handler\Webhook">
-        <arguments>
-            <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
-            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
-            <argument name="fileName" xsi:type="string">/var/log/weareplanet_webhook.log</argument>
-        </arguments>
-    </type>
-
-    <type name="WeArePlanet\PluginCore\Webhook\WebhookProcessor">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\PluginCoreLoggerAdapter</argument>
         </arguments>
     </type>
 
@@ -284,52 +345,11 @@
         </arguments>
     </type>
 
-    <virtualType name="WeArePlanet\Payment\WebhookManagementGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\WebhookManagementGateway">
-        <arguments>
-            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
-            <argument name="logger" xsi:type="object">WeArePlanet\PluginCore\Log\LoggerInterface</argument>
-        </arguments>
-    </virtualType>
-
     <virtualType name="WeArePlanet\Payment\WebhookSignatureGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\WebhookSignatureGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
-            <argument name="logger" xsi:type="object">WeArePlanet\PluginCore\Log\LoggerInterface</argument>
         </arguments>
     </virtualType>
-
-    <type name="WeArePlanet\PluginCore\Webhook\WebhookService">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\PluginCoreLoggerAdapter</argument>
-        </arguments>
-    </type>
-
-    <virtualType name="WeArePlanet\Payment\PaymentMethodGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\PaymentMethodGateway">
-        <arguments>
-            <argument name="provider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
-            <argument name="logger" xsi:type="object">WeArePlanet\PluginCore\Log\LoggerInterface</argument>
-        </arguments>
-    </virtualType>
-
-    <type name="WeArePlanet\PluginCore\PaymentMethod\PaymentMethodService">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\PluginCoreLoggerAdapter</argument>
-        </arguments>
-    </type>
-
-    <type name="WeArePlanet\PluginCore\Transaction\TransactionService">
-        <arguments>
-            <argument name="gateway" xsi:type="object">WeArePlanet\Payment\TransactionGateway</argument>
-            <argument name="logger" xsi:type="object">WeArePlanet\PluginCore\Log\LoggerInterface</argument>
-        </arguments>
-    </type>
-
-    <type name="WeArePlanet\PluginCore\LineItem\LineItemConsistencyService">
-        <arguments>
-            <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
-            <argument name="logger" xsi:type="object">WeArePlanet\PluginCore\Log\LoggerInterface</argument>
-        </arguments>
-    </type>
 
     <type name="WeArePlanet\Payment\Model\CoreWebhook\CompositeWebhookLifecycleHandler">
         <arguments>
@@ -342,40 +362,6 @@
             </argument>
 
             <argument name="defaultHandler" xsi:type="object">WeArePlanet\Payment\Model\CoreWebhook\DefaultWebhookLifecycleHandler</argument>
-        </arguments>
-    </type>
-
-    <type name="WeArePlanet\Payment\Model\CoreWebhook\Transaction\TransactionWebhookLifecycleHandler">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\WebhookLogger</argument>
-        </arguments>
-    </type>
-
-
-    <type name="WeArePlanet\Payment\Model\CoreWebhook\Refund\RefundWebhookLifecycleHandler">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\WebhookLogger</argument>
-        </arguments>
-    </type>
-
-    <type name="WeArePlanet\Payment\Model\CoreWebhook\DefaultWebhookLifecycleHandler">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\WebhookLogger</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\CoreWebhook\DeliveryIndication\DeliveryIndicationWebhookLifecycleHandler">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\WebhookLogger</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\CoreWebhook\TransactionCompletion\TransactionCompletionWebhookLifecycleHandler">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\WebhookLogger</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\CoreWebhook\TransactionInvoice\TransactionInvoiceWebhookLifecycleHandler">
-        <arguments>
-            <argument name="logger" xsi:type="object">WeArePlanet\Payment\Logger\WebhookLogger</argument>
         </arguments>
     </type>
 

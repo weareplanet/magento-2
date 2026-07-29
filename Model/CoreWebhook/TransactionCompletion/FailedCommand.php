@@ -12,7 +12,7 @@ use Magento\Sales\Model\ResourceModel\Order as OrderResourceModel;
 use WeArePlanet\Payment\Api\TransactionInfoRepositoryInterface;
 use WeArePlanet\Payment\Model\CoreWebhook\OrderInvoiceTrait;
 use WeArePlanet\PluginCore\Log\LoggerInterface;
-use WeArePlanet\PluginCore\Sdk\SdkProvider;
+use WeArePlanet\PluginCore\Transaction\Completion\TransactionCompletionGatewayInterface;
 use WeArePlanet\PluginCore\Webhook\Command\WebhookCommand;
 use WeArePlanet\PluginCore\Webhook\WebhookContext;
 
@@ -30,7 +30,7 @@ class FailedCommand extends WebhookCommand
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param OrderResourceModel $orderResourceModel
      * @param OrderFactory $orderFactory
-     * @param SdkProvider $sdkProvider
+     * @param TransactionCompletionGatewayInterface $completionGateway
      */
     public function __construct(
         WebhookContext $context,
@@ -40,7 +40,7 @@ class FailedCommand extends WebhookCommand
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
         private readonly OrderResourceModel $orderResourceModel,
         private readonly OrderFactory $orderFactory,
-        protected readonly SdkProvider $sdkProvider,
+        protected readonly TransactionCompletionGatewayInterface $completionGateway,
     ) {
         parent::__construct($context, $logger);
     }
@@ -96,8 +96,8 @@ class FailedCommand extends WebhookCommand
         }
 
         // Get IDs directly from the Completion object (No need for findTransactionInfo)
-        $spaceId = $completion->getLinkedSpaceId();
-        $sdkTransactionId = $completion->getLineItemVersion()->getTransaction()->getId();
+        $spaceId = $this->context->spaceId;
+        $sdkTransactionId = $completion->linkedTransactionId;
 
         // Cancel Invoice
         $invoice = $this->getInvoiceForTransaction($sdkTransactionId, $spaceId, $order);

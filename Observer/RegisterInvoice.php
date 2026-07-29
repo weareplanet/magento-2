@@ -16,8 +16,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice;
 use WeArePlanet\Payment\Model\Payment\Method\Adapter;
-use WeArePlanet\Payment\Model\Service\Invoice\TransactionService;
-use WeArePlanet\Sdk\Model\TransactionState;
+use WeArePlanet\PluginCore\Transaction\TransactionGatewayInterface;
 
 /**
  * Observer to validate and handle the registration of an invoice.
@@ -26,17 +25,17 @@ class RegisterInvoice implements ObserverInterface
 {
     /**
      *
-     * @var TransactionService
+     * @var TransactionGatewayInterface
      */
-    private $transactionService;
+    private $transactionGateway;
 
     /**
      *
-     * @param TransactionService $transactionService
+     * @param TransactionGatewayInterface $transactionGateway
      */
-    public function __construct(TransactionService $transactionService)
+    public function __construct(TransactionGatewayInterface $transactionGateway)
     {
-        $this->transactionService = $transactionService;
+        $this->transactionGateway = $transactionGateway;
     }
 
     /**
@@ -70,17 +69,15 @@ class RegisterInvoice implements ObserverInterface
 
                     if (! $order->getWeareplanetInvoiceAllowManipulation()) {
                         // The invoice can only be created by the merchant if the transaction is in state 'AUTHORIZED'.
-                        $transaction = $this->transactionService->getTransaction(
-                            $order->getWeareplanetSpaceId(),
-                            $order->getWeareplanetTransactionId()
+                        $transaction = $this->transactionGateway->find(
+                            (int) $order->getWeareplanetSpaceId(),
+                            (int) $order->getWeareplanetTransactionId()
                         );
-                        if ($transaction->getState() != TransactionState::AUTHORIZED) {
+                        if ($transaction === null || ! $transaction->state->allowsInvoiceManipulation()) {
                             throw new \Magento\Framework\Exception\LocalizedException(
                                 \__('The invoice cannot be created.')
                             );
                         }
-
-                        $this->transactionService->updateLineItems($invoice, $invoice->getGrandTotal());
                     }
                 }
             }

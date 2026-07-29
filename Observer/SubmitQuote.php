@@ -24,7 +24,7 @@ use WeArePlanet\Payment\Api\TransactionInfoRepositoryInterface;
 use WeArePlanet\Payment\Helper\Data as Helper;
 use WeArePlanet\Payment\Model\ApiClient;
 use WeArePlanet\Payment\Model\Service\Order\TransactionService;
-use WeArePlanet\Sdk\Model\TransactionState;
+use WeArePlanet\PluginCore\Transaction\State as CoreTransactionState;
 use WeArePlanet\Sdk\Service\ChargeFlowService;
 use Psr\Log\LoggerInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
@@ -182,11 +182,7 @@ class SubmitQuote implements ObserverInterface
             if ($order->getWeareplanetToken() != null) {
                 $this->transactionService->waitForTransactionState(
                     $order,
-                    [
-                        TransactionState::AUTHORIZED,
-                        TransactionState::COMPLETED,
-                        TransactionState::FULFILL
-                    ],
+                    CoreTransactionState::getPaidLikeValues(),
                     3
                 );
             }

@@ -24,7 +24,7 @@ use WeArePlanet\Sdk\Model\EntityQueryFilter;
 use WeArePlanet\Sdk\Model\EntityQueryFilterType;
 use WeArePlanet\Sdk\Model\FailureReason;
 use WeArePlanet\Sdk\Model\Transaction;
-use WeArePlanet\Sdk\Model\TransactionState;
+use WeArePlanet\PluginCore\Transaction\State as CoreTransactionState;
 use WeArePlanet\Sdk\Service\ChargeAttemptService;
 
 /**
@@ -196,8 +196,8 @@ class TransactionInfoManagement implements TransactionInfoManagementInterface
             $transactionInfo->setData(TransactionInfoInterface::FAILURE_URL, $failureUrl);
         }
 
-        if ($transaction->getState() == TransactionState::FAILED
-            || $transaction->getState() == TransactionState::DECLINE) {
+        if ($transaction->getState() == CoreTransactionState::FAILED->value
+            || $transaction->getState() == CoreTransactionState::DECLINE->value) {
             $transactionInfo->setData(
                 TransactionInfoInterface::FAILURE_REASON,
                 $transaction->getFailureReason() instanceof FailureReason ? $transaction->getFailureReason()
