@@ -12,7 +12,7 @@
 namespace WeArePlanet\Payment\Api;
 
 use Magento\Sales\Model\Order;
-use WeArePlanet\Sdk\Model\Transaction;
+use WeArePlanet\PluginCore\Transaction\Transaction;
 
 interface TransactionInfoManagementInterface
 {

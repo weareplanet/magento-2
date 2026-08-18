@@ -30,8 +30,8 @@
     <preference for="WeArePlanet\Payment\Api\Data\RefundJobSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="WeArePlanet\PluginCore\Log\LoggerInterface" type="WeArePlanet\Payment\Logger\LoggerAdapter" />
     <preference for="WeArePlanet\PluginCore\Settings\SettingsProviderInterface" type="WeArePlanet\Payment\Model\Settings\SettingsProvider" />
-    <preference for="WeArePlanet\PluginCore\Webhook\StateFetcherInterface" type="WeArePlanet\Payment\Model\CoreWebhook\StateFetcher" />
-    <preference for="WeArePlanet\PluginCore\Webhook\WebhookLifecycleHandler" type="WeArePlanet\Payment\Model\CoreWebhook\CompositeWebhookLifecycleHandler" />
+    <preference for="WeArePlanet\PluginCore\Webhook\StateFetcherInterface" type="WeArePlanet\Payment\Model\Webhook\StateFetcher" />
+    <preference for="WeArePlanet\PluginCore\Webhook\WebhookLifecycleHandler" type="WeArePlanet\Payment\Model\Webhook\CompositeWebhookLifecycleHandler" />
     <preference for="WeArePlanet\PluginCore\Transaction\TransactionGatewayInterface" type="WeArePlanet\Payment\TransactionGateway" />
     <preference for="WeArePlanet\PluginCore\Transaction\Completion\TransactionCompletionGatewayInterface" type="WeArePlanet\Payment\TransactionCompletionGateway" />
     <preference for="WeArePlanet\PluginCore\Transaction\Invoice\InvoiceGatewayInterface" type="WeArePlanet\Payment\InvoiceGateway" />
@@ -43,6 +43,11 @@
     <preference for="WeArePlanet\PluginCore\Refund\RefundGatewayInterface" type="WeArePlanet\Payment\RefundGateway" />
     <preference for="WeArePlanet\PluginCore\Document\DocumentGatewayInterface" type="WeArePlanet\Payment\DocumentGateway" />
     <preference for="WeArePlanet\PluginCore\ManualTask\ManualTaskGatewayInterface" type="WeArePlanet\Payment\ManualTaskGateway" />
+    <preference for="WeArePlanet\PluginCore\Token\TokenGatewayInterface" type="WeArePlanet\Payment\TokenGateway" />
+    <preference for="WeArePlanet\PluginCore\DeliveryIndication\DeliveryIndicationGatewayInterface" type="WeArePlanet\Payment\DeliveryIndicationGateway" />
+    <preference for="WeArePlanet\PluginCore\GlobalData\GlobalDataGatewayInterface" type="WeArePlanet\Payment\GlobalDataGateway" />
+    <preference for="WeArePlanet\PluginCore\Charge\ChargeGatewayInterface" type="WeArePlanet\Payment\ChargeGateway" />
+    <preference for="WeArePlanet\PluginCore\Sdk\ClientMetadataProviderInterface" type="WeArePlanet\Payment\Model\Settings\ClientMetadataProvider" />
     <type name="WeArePlanet\Payment\Model\ResourceModel\TokenInfo\Collection\Grid">
         <arguments>
             <argument name="resource" xsi:type="object">WeArePlanet\Payment\Model\ResourceModel\TokenInfo</argument>
@@ -61,103 +66,12 @@
         </arguments>
     </type>
 
-    <!-- Providers -->
-    <type name="WeArePlanet\Payment\Model\Provider\PaymentMethodProvider">
-        <arguments>
-            <argument name="cache" xsi:type="object">Magento\Framework\App\Cache\Type\Config</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Provider\PaymentConnectorProvider">
-        <arguments>
-            <argument name="cache" xsi:type="object">Magento\Framework\App\Cache\Type\Config</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Provider\LanguageProvider">
-        <arguments>
-            <argument name="cache" xsi:type="object">Magento\Framework\App\Cache\Type\Config</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Provider\LabelDescriptorProvider">
-        <arguments>
-            <argument name="cache" xsi:type="object">Magento\Framework\App\Cache\Type\Config</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Provider\LabelDescriptorGroupProvider">
-        <arguments>
-            <argument name="cache" xsi:type="object">Magento\Framework\App\Cache\Type\Config</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Provider\CurrencyProvider">
-        <arguments>
-            <argument name="cache" xsi:type="object">Magento\Framework\App\Cache\Type\Config</argument>
-        </arguments>
-    </type>
-
     <!-- Webhook Listeners -->
     <type name="Magento\Framework\Lock\Backend\Database">
         <arguments>
             <argument name="path" xsi:type="string">var/lock</argument>
         </arguments>
     </type>
-    <type name="WeArePlanet\Payment\Model\Webhook\Listener\AbstractOrderRelatedListener">
-        <arguments>
-            <argument name="lockManager" xsi:type="object">Magento\Framework\Lock\Backend\Database</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Webhook\Listener\TransactionListener">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">WeArePlanetTransactionWebhookCommandPool</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Webhook\Listener\TransactionInvoiceListener">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">WeArePlanetTransactionInvoiceWebhookCommandPool</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Webhook\Listener\DeliveryIndicationListener">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">WeArePlanetDeliveryIndicationWebhookCommandPool</argument>
-        </arguments>
-    </type>
-    <type name="WeArePlanet\Payment\Model\Webhook\Listener\TransactionCompletionListener">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">WeArePlanetTransactionCompletionWebhookCommandPool</argument>
-        </arguments>
-    </type>
-    <virtualType name="WeArePlanetTransactionWebhookCommandPool" type="WeArePlanet\Payment\Model\Webhook\Listener\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="authorized" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\Transaction\AuthorizedCommand</item>
-                <item name="completed" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\Transaction\CompletedCommand</item>
-                <item name="fulfill" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\Transaction\FulfillCommand</item>
-                <item name="decline" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\Transaction\DeclineCommand</item>
-                <item name="failed" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\Transaction\FailedCommand</item>
-                <item name="voided" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\Transaction\VoidedCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="WeArePlanetTransactionInvoiceWebhookCommandPool" type="WeArePlanet\Payment\Model\Webhook\Listener\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="paid" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\TransactionInvoice\CaptureCommand</item>
-                <item name="not_applicable" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\TransactionInvoice\CaptureCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="WeArePlanetDeliveryIndicationWebhookCommandPool" type="WeArePlanet\Payment\Model\Webhook\Listener\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="manual_check_required" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\DeliveryIndication\ManualCheckRequiredCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="WeArePlanetTransactionCompletionWebhookCommandPool" type="WeArePlanet\Payment\Model\Webhook\Listener\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="failed" xsi:type="string">WeArePlanet\Payment\Model\Webhook\Listener\TransactionCompletion\FailedCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
     <!-- Payment Gateway -->
     <virtualType name="WeArePlanetPaymentGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
@@ -219,6 +133,7 @@
     <type name="WeArePlanet\PluginCore\Sdk\SdkProvider">
         <arguments>
             <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
+            <argument name="clientMetadataProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\ClientMetadataProviderInterface</argument>
         </arguments>
     </type>
 
@@ -301,6 +216,30 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="WeArePlanet\Payment\TokenGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\TokenGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WeArePlanet\Payment\DeliveryIndicationGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\DeliveryIndicationGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WeArePlanet\Payment\GlobalDataGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\GlobalDataGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WeArePlanet\Payment\ChargeGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\ChargeGateway">
+        <arguments>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="WeArePlanet\Payment\DocumentGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\DocumentGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
@@ -315,13 +254,13 @@
 
     <virtualType name="WeArePlanet\Payment\PaymentMethodGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\PaymentMethodGateway">
         <arguments>
-            <argument name="provider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
     <virtualType name="WeArePlanet\Payment\ManualTaskGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\ManualTaskGateway">
         <arguments>
-            <argument name="provider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
+            <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
@@ -338,7 +277,7 @@
         </arguments>
     </type>
 
-    <type name="WeArePlanet\Payment\Model\CoreWebhook\RegistryConfigurer">
+    <type name="WeArePlanet\Payment\Model\Webhook\RegistryConfigurer">
         <arguments>
             <argument name="objectManager" xsi:type="object">Magento\Framework\ObjectManagerInterface\Proxy</argument>
             <argument name="webhookProcessor" xsi:type="object">WeArePlanet\PluginCore\Webhook\WebhookProcessor</argument>
@@ -351,17 +290,17 @@
         </arguments>
     </virtualType>
 
-    <type name="WeArePlanet\Payment\Model\CoreWebhook\CompositeWebhookLifecycleHandler">
+    <type name="WeArePlanet\Payment\Model\Webhook\CompositeWebhookLifecycleHandler">
         <arguments>
             <argument name="handlers" xsi:type="array">
-                <item name="Transaction" xsi:type="object">WeArePlanet\Payment\Model\CoreWebhook\Transaction\TransactionWebhookLifecycleHandler</item>
-                <item name="Refund" xsi:type="object">WeArePlanet\Payment\Model\CoreWebhook\Refund\RefundWebhookLifecycleHandler</item>
-                <item name="DeliveryIndication" xsi:type="object">WeArePlanet\Payment\Model\CoreWebhook\DeliveryIndication\DeliveryIndicationWebhookLifecycleHandler</item>
-                <item name="TransactionCompletion" xsi:type="object">WeArePlanet\Payment\Model\CoreWebhook\TransactionCompletion\TransactionCompletionWebhookLifecycleHandler</item>
-                <item name="TransactionInvoice" xsi:type="object">WeArePlanet\Payment\Model\CoreWebhook\TransactionInvoice\TransactionInvoiceWebhookLifecycleHandler</item>
+                <item name="Transaction" xsi:type="object">WeArePlanet\Payment\Model\Webhook\Transaction\TransactionWebhookLifecycleHandler</item>
+                <item name="Refund" xsi:type="object">WeArePlanet\Payment\Model\Webhook\Refund\RefundWebhookLifecycleHandler</item>
+                <item name="DeliveryIndication" xsi:type="object">WeArePlanet\Payment\Model\Webhook\DeliveryIndication\DeliveryIndicationWebhookLifecycleHandler</item>
+                <item name="TransactionCompletion" xsi:type="object">WeArePlanet\Payment\Model\Webhook\TransactionCompletion\TransactionCompletionWebhookLifecycleHandler</item>
+                <item name="TransactionInvoice" xsi:type="object">WeArePlanet\Payment\Model\Webhook\TransactionInvoice\TransactionInvoiceWebhookLifecycleHandler</item>
             </argument>
 
-            <argument name="defaultHandler" xsi:type="object">WeArePlanet\Payment\Model\CoreWebhook\DefaultWebhookLifecycleHandler</argument>
+            <argument name="defaultHandler" xsi:type="object">WeArePlanet\Payment\Model\Webhook\DefaultWebhookLifecycleHandler</argument>
         </arguments>
     </type>
 

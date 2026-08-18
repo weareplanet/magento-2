@@ -16,7 +16,7 @@ use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
 use Magento\Sales\Model\Order\Creditmemo;
 use WeArePlanet\Payment\Helper\Data as Helper;
 use WeArePlanet\Payment\Helper\LineItemReduction as LineItemReductionHelper;
-use WeArePlanet\PluginCore\Currency\CurrencyRoundingService;
+use WeArePlanet\PluginCore\GlobalData\Currency\CurrencyRoundingService;
 use WeArePlanet\PluginCore\Refund\RefundService as CoreRefundService;
 
 /**

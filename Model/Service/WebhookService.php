@@ -14,7 +14,7 @@ namespace WeArePlanet\Payment\Model\Service;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Api\Data\WebsiteInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use WeArePlanet\Payment\Model\CoreWebhook\RegistryConfigurer;
+use WeArePlanet\Payment\Model\Webhook\RegistryConfigurer;
 use WeArePlanet\Payment\Model\Settings\SettingsProvider;
 use WeArePlanet\PluginCore\Log\LoggerInterface;
 use WeArePlanet\PluginCore\Webhook\WebhookProcessor;

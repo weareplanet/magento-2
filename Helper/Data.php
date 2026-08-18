@@ -15,12 +15,7 @@ use Magento\Framework\App\Area as AppArea;
 use Magento\Framework\App\State as AppState;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use WeArePlanet\PluginCore\Currency\CurrencyRoundingService;
-use WeArePlanet\Sdk\Model\CriteriaOperator;
-use WeArePlanet\Sdk\Model\EntityQueryFilter;
-use WeArePlanet\Sdk\Model\EntityQueryFilterType;
-use WeArePlanet\Sdk\Model\EntityQueryOrderBy;
-use WeArePlanet\Sdk\Model\EntityQueryOrderByType;
+use WeArePlanet\PluginCore\GlobalData\Currency\CurrencyRoundingService;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -67,39 +62,6 @@ class Data extends AbstractHelper
     public function roundAmount($amount, $currencyCode)
     {
         return CurrencyRoundingService::round((float) $amount, (string) $currencyCode);
-    }
-
-    /**
-     * Creates and returns a new entity filter.
-     *
-     * @param string $fieldName
-     * @param mixed $value
-     * @param string $operator
-     * @return EntityQueryFilter
-     */
-    public function createEntityFilter($fieldName, $value, $operator = CriteriaOperator::EQUALS)
-    {
-        $filter = new EntityQueryFilter();
-        $filter->setType(EntityQueryFilterType::LEAF);
-        $filter->setOperator($operator);
-        $filter->setFieldName($fieldName);
-        $filter->setValue($value);
-        return $filter;
-    }
-
-    /**
-     * Creates and returns a new entity order by.
-     *
-     * @param string $fieldName
-     * @param string $sortOrder
-     * @return EntityQueryOrderBy
-     */
-    public function createEntityOrderBy($fieldName, $sortOrder = EntityQueryOrderByType::DESC)
-    {
-        $orderBy = new EntityQueryOrderBy();
-        $orderBy->setFieldName($fieldName);
-        $orderBy->setSorting($sortOrder);
-        return $orderBy;
     }
 
     /**
