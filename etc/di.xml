@@ -169,7 +169,7 @@
     <!-- preference above.                                                  -->
     <!-- =================================================================== -->
 
-    <virtualType name="WeArePlanet\Payment\TransactionGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\TransactionGateway">
+    <virtualType name="WeArePlanet\Payment\TransactionGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\TransactionGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
             <argument name="settings" xsi:type="object">WeArePlanet\PluginCore\Settings\Settings</argument>
@@ -185,14 +185,14 @@
     </type>
 
     <virtualType name="WeArePlanet\Payment\TransactionCompletionGateway"
-                 type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\TransactionCompletionGateway">
+                 type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\TransactionCompletionGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
     <virtualType name="WeArePlanet\Payment\InvoiceGateway"
-                 type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\InvoiceGateway">
+                 type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\InvoiceGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
@@ -210,37 +210,37 @@
         </arguments>
     </type>
 
-    <virtualType name="WeArePlanet\Payment\RefundGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\RefundGateway">
+    <virtualType name="WeArePlanet\Payment\RefundGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\RefundGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="WeArePlanet\Payment\TokenGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\TokenGateway">
+    <virtualType name="WeArePlanet\Payment\TokenGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\TokenGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="WeArePlanet\Payment\DeliveryIndicationGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\DeliveryIndicationGateway">
+    <virtualType name="WeArePlanet\Payment\DeliveryIndicationGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\DeliveryIndicationGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="WeArePlanet\Payment\GlobalDataGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\GlobalDataGateway">
+    <virtualType name="WeArePlanet\Payment\GlobalDataGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\GlobalDataGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="WeArePlanet\Payment\ChargeGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\ChargeGateway">
+    <virtualType name="WeArePlanet\Payment\ChargeGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\ChargeGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="WeArePlanet\Payment\DocumentGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\DocumentGateway">
+    <virtualType name="WeArePlanet\Payment\DocumentGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\DocumentGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
@@ -252,19 +252,19 @@
         </arguments>
     </type>
 
-    <virtualType name="WeArePlanet\Payment\PaymentMethodGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\PaymentMethodGateway">
+    <virtualType name="WeArePlanet\Payment\PaymentMethodGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\PaymentMethodGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="WeArePlanet\Payment\ManualTaskGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\ManualTaskGateway">
+    <virtualType name="WeArePlanet\Payment\ManualTaskGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\ManualTaskGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="WeArePlanet\Payment\WebhookManagementGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\WebhookManagementGateway">
+    <virtualType name="WeArePlanet\Payment\WebhookManagementGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\WebhookManagementGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
@@ -284,7 +284,7 @@
         </arguments>
     </type>
 
-    <virtualType name="WeArePlanet\Payment\WebhookSignatureGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV1\WebhookSignatureGateway">
+    <virtualType name="WeArePlanet\Payment\WebhookSignatureGateway" type="WeArePlanet\PluginCore\Sdk\WebServiceAPIV2\WebhookSignatureGateway">
         <arguments>
             <argument name="sdkProvider" xsi:type="object">WeArePlanet\PluginCore\Sdk\SdkProvider</argument>
         </arguments>
