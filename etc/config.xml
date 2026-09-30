@@ -15,7 +15,7 @@
 	<default>
 		<weareplanet_payment>
 			<information>
-				<version>3.5.0</version>
+				<version>3.5.1</version>
 			</information>
 			<general>
 				<base_gateway_url>https://paymentshub.weareplanet.com/</base_gateway_url>

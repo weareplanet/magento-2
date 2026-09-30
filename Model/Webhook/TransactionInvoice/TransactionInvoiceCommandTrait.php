@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace WeArePlanet\Payment\Model\Webhook\TransactionInvoice;
 
 use Magento\Sales\Model\Order;
+use WeArePlanet\PluginCore\Transaction\Invoice\Exception\InvoiceException;
 use WeArePlanet\PluginCore\Transaction\Invoice\Invoice;
 use WeArePlanet\PluginCore\Transaction\Invoice\InvoiceGatewayInterface;
+use WeArePlanet\PluginCore\Webhook\Exception\RetryableWebhookException;
 use WeArePlanet\Payment\Model\Webhook\BaseOrderLookupTrait;
 
 /**
@@ -19,16 +21,32 @@ trait TransactionInvoiceCommandTrait
     /**
      * Load the transaction invoice domain entity via plugin-core.
      *
+     * A retryable failure must not be swallowed into a null here — doing so would
+     * make the caller ack the webhook as "nothing to do" and the portal would
+     * never retry it. A non-retryable failure returns null, same as the gateway
+     * confirming the entity does not exist.
+     *
      * @return Invoice|null
+     * @throws RetryableWebhookException If the failure is retryable.
      */
     protected function loadTransactionInvoice(): ?Invoice
     {
         try {
             return $this->invoiceGateway->find($this->context->spaceId, $this->context->entityId);
-        } catch (\Exception $e) {
+        } catch (InvoiceException $e) {
+            if ($e->isRetryable()) {
+                throw new RetryableWebhookException(
+                    "Could not load TransactionInvoice {$this->context->entityId}: " . $e->getMessage(),
+                    null,
+                    $e
+                );
+            }
+
             $this->logger->error(
-                "Could not load TransactionInvoice {$this->context->entityId}: " . $e->getMessage()
+                "Could not load TransactionInvoice {$this->context->entityId}: " . $e->getMessage(),
+                ['exception' => $e]
             );
+
             return null;
         }
     }
